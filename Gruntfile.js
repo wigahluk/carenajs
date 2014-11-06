@@ -9,9 +9,9 @@ module.exports = function (grunt) {
                 '/**',
                 ' * <%= pkg.description %>',
                 ' * @version v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>',
-                ' *  @author <%= pkg.author %>',
+                ' * @author <%= pkg.author %>',
                 ' * @license http://www.apache.org/licenses/LICENSE-2.0',
-                ' **/'
+                ' **/\n'
             ].join('\n')
         },
         dirs: {
@@ -34,6 +34,21 @@ module.exports = function (grunt) {
                 src: ['<%= concat.dist.dest %>'],
                 dest: '<%= dirs.dest %>/<%= pkg.name %>.min.js'
             }
+        },
+        karma: {
+            options: {
+                configFile: 'karma.conf.js'
+            },
+            build: {
+                browsers: ['PhantomJS'],
+                singleRun: true,
+                autoWatch: false
+            },
+            test: {
+                singleRun: false,
+                autoWatch: true,
+                browsers: ['Chrome']
+            }
         }
     });
     grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -42,5 +57,9 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
 
-    grunt.registerTask('default', 'uglify');
+    grunt.loadNpmTasks('grunt-karma');
+
+    grunt.registerTask('default', 'build');
+    grunt.registerTask('build', ['karma:build', 'concat', 'uglify']);
+    grunt.registerTask('test', ['karma:test']);
 };
