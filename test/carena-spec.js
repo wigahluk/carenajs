@@ -23,11 +23,27 @@ define(['src/carena'], function (carena) {
         });
     });
 
+    describe('range', function () {
+        it('Creating a simple array', function () {
+            var a = carena.range(1, 1000);
+            expect(Array.isArray(a)).toBeTruthy();
+            expect(a.length).toBe(1000);
+            for(var i = 0; i < 1000; i++) {
+                expect(a[i]).toBe(i + 1);
+            }
+        });
+    });
+
     describe('sum', function () {
         it('Sum of a numeric array', function () {
             var count = 1000;
             var a = carena.sum(carena.ones(count));
             expect(a).toBe(count);
+        });
+    });
+
+    describe('mean', function () {
+        it('Arithmetic mean of a numeric array', function () {
         });
     });
 });

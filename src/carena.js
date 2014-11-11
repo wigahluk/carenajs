@@ -2,7 +2,7 @@
     'use strict';
 
     // Creates an array of a given size where all elements are zero.
-    function zeroes (sizex, sizey) {
+    function zeroes (size) {
         var a = new Array(size);
         for ( var i = 0; i < size; i++) {
             a[i] = 0;
@@ -19,6 +19,17 @@
         return a;
     }
 
+    // Creates an array of a given size where elements increments by one until reach the limit
+    function range (start, end) {
+        var a = [];
+        var i = start;
+        while (i < end + 1) {
+            a.push(i);
+            i ++;
+        }
+        return a;
+    }
+
     // sum all the elements of an array.
     function sum (array) {
         var s = 0;
@@ -28,10 +39,12 @@
         return s;
     }
 
+
     function createCarena () {
         var carena = {};
         carena.zeroes = zeroes;
         carena.ones = ones;
+        carena.range = range;
         carena.sum = sum;
         return carena;
     };
