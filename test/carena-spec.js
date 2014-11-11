@@ -22,4 +22,12 @@ define(['src/carena'], function (carena) {
             })
         });
     });
+
+    describe('sum', function () {
+        it('Sum of a numeric array', function () {
+            var count = 1000;
+            var a = carena.sum(carena.ones(count));
+            expect(a).toBe(count);
+        });
+    });
 });
