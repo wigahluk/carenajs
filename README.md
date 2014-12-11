@@ -32,9 +32,17 @@ Fills undefined entries with zero or a given value.
 Mathematical methods
 --------------------
 
+### max(array)
+
+Calculates the max value of an array.
+
 ### mean(array)
 
-Calculates the arithmetic mean of an array. 
+Calculates the arithmetic mean of an array.
+ 
+### min(array)
+
+Calculates the min of an array.  
 
 ### sum(array)
 

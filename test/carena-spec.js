@@ -58,6 +58,22 @@ define(['src/carena'], function (carena) {
         });
     });
 
+    describe('Min', function () {
+        it('Returns the minimum value of a numeric array', function () {
+            var a = carena.range(1, 1000);
+            var m = carena.min(a);
+            expect(m).toBe(1);
+        });
+    });
+
+    describe('Max', function () {
+        it('Returns the minimum value of a numeric array', function () {
+            var a = carena.range(1, 1000);
+            var m = carena.max(a);
+            expect(m).toBe(1000);
+        });
+    });
+
     describe('sum', function () {
         it('Sum of a numeric array', function () {
             var count = 1000;

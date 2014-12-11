@@ -1,6 +1,16 @@
 ;(function () {
     'use strict';
 
+    // accessory functions not exposed in carena object:
+
+    function sort(array) {
+        var a = array.slice();
+        a.sort(function (x, y) { return x - y; });
+        return a;
+    }
+
+    // Methods exposed in carena object:
+
     // Creates an array of a given size where all elements are zero.
     function zeroes (size) {
         var a = new Array(size);
@@ -50,10 +60,29 @@
         return s;
     }
 
+    // calculates the max value of an array.
+    function max (array) {
+        var s = array[0];
+        for ( var i = 0; i < array.length; i++) {
+            s = Math.max(s, array[i]);
+        }
+        return s;
+    }
+
+    // calculates the min value of an array.
+    function min (array) {
+        var s = array[0];
+        for ( var i = 0; i < array.length; i++) {
+            s = Math.min(s, array[i]);
+        }
+        return s;
+    }
+
     // calculates the arithmetic mean of a numeric set
     function mean(array) {
         return sum(array) / array.length;
     }
+
     // calculates the weighted mean of a numeric set
     function wMean(array, weights) {
         var c = new Array(array.length);
@@ -77,6 +106,8 @@
         carena.zeroes = zeroes;
         carena.ones = ones;
         carena.range = range;
+        carena.min = min;
+        carena.max = max;
         carena.sum = sum;
         carena.times = times;
         carena.mean = mean;
