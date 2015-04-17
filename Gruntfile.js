@@ -26,7 +26,6 @@ module.exports = function (grunt) {
                 dest: '<%= dirs.dest %>/<%= pkg.name %>.js'
             }
         },
-        // TODO, add compress.
         compress: {
             main: {
                 options: {
