@@ -32,26 +32,38 @@ Fills undefined entries with zero or a given value.
 Mathematical methods
 --------------------
 
+### dTimes(A, B)
+
+Multiplies two arrays element by element.
+
 ### max(array)
 
-Calculates the max value of an array.
+Calculates the max value of an array. By convention, if the array is empty or undefined, returns -Infinity.
 
 ### mean(array)
 
-Calculates the arithmetic mean of an array.
+Calculates the arithmetic mean of an array. By convention, if the array is empty or undefined, returns zero.
  
 ### min(array)
 
-Calculates the min of an array.  
+Calculates the min of an array.  By convention, if the array is empty or undefined, returns Infinity. 
 
-### sum(array)
+### sum(array[, array_2, ...])
 
-Sum all the elements of an array.
+If there is only one argument and it is an array, it return the sum of all the elements of an array.
+By convention, if the array is empty or undefined, returns zero.
+
+> sum([1,2]) // returns 3
+
+If the arguments are arrays, it will return an array of the length of the first array, where the element at index i corresponds
+to the sum of all the elements at the position i of all given arrays:
+   
+> sum([1,2],[2,3]) // return [3,5] 
 
 ### times(constant, array)
 
-Multiply all elements in a given array by a constant.  
+Multiply all elements in a given array by a constant. By convention, if the array is empty or undefined, returns zero.  
 
 ### wMean(array, weights)
 
-Calculates the arithmetic weighted mean of an array.
+Calculates the arithmetic weighted mean of an array. By convention, if the array is empty or undefined, returns zero.

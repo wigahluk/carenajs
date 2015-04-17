@@ -1,3 +1,9 @@
+/**
+ * Convenient methods for manipulating arrays and collections
+ * @version v0.0.0 - 2015-04-16
+ * @author Oscar Ponce <oscar@opb.mx>
+ * @license http://www.apache.org/licenses/LICENSE-2.0
+ **/
 ;(function () {
     'use strict';
 

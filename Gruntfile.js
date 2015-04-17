@@ -26,6 +26,17 @@ module.exports = function (grunt) {
                 dest: '<%= dirs.dest %>/<%= pkg.name %>.js'
             }
         },
+        // TODO, add compress.
+        compress: {
+            main: {
+                options: {
+                    archive: '<%= dirs.dest %>/carena.zip'
+                },
+                files: [
+                    {src: ['<%= dirs.dest %>/*.js'], filter: 'isFile'}
+                ]
+            }
+        },
         uglify: {
             options: {
                 banner: '<%= meta.banner %>'
@@ -57,9 +68,11 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
 
+    grunt.loadNpmTasks('grunt-contrib-compress');
+
     grunt.loadNpmTasks('grunt-karma');
 
     grunt.registerTask('default', 'build');
-    grunt.registerTask('build', ['karma:build', 'concat', 'uglify']);
+    grunt.registerTask('build', ['karma:build', 'concat', 'uglify', 'compress']);
     grunt.registerTask('test', ['karma:test']);
 };
