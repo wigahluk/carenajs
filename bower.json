@@ -3,7 +3,7 @@
   "version": "v0.1-alpha",
   "homepage": "https://github.com/wigahluk/carenajs",
   "authors": [
-    "Oscar Ponce <oponce@apigee.com>"
+    "Oscar Ponce <oscar@opb.mx>"
   ],
   "description": "Convenient methods for manipulating arrays and collections",
   "main": "carenajs.js",
