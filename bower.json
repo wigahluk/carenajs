@@ -1,0 +1,25 @@
+{
+  "name": "carenajs",
+  "version": "v0.0.1",
+  "homepage": "https://github.com/wigahluk/carenajs",
+  "authors": [
+    "Oscar Ponce <oponce@apigee.com>"
+  ],
+  "description": "Convenient methods for manipulating arrays and collections",
+  "main": "carenajs.js",
+  "moduleType": [
+    "amd",
+    "node"
+  ],
+  "keywords": [
+    "carenajs"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
