@@ -1,6 +1,6 @@
 {
     "name": "carenajs",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Convenient methods for manipulating arrays and collections",
     "engines": ">=0.9.0",
     "author": "Oscar Ponce <oscar@opb.mx>",
