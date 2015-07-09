@@ -1,6 +1,6 @@
 /**
  * Convenient methods for manipulating arrays and collections
- * @version v0.0.0 - 2015-04-16
+ * @version vv0.1-alpha - 2015-07-08
  * @author Oscar Ponce <oscar@opb.mx>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  **/
