@@ -48,6 +48,10 @@ Calculates the arithmetic mean of an array. By convention, if the array is empty
 
 Calculates the min of an array.  By convention, if the array is empty or undefined, returns Infinity. 
 
+### nTiles(array, N)
+
+Return the N+1 n-tiles on a given array, including the zero n-tile also known as the minimum.
+
 ### sum(array[, array_2, ...])
 
 If there is only one argument and it is an array, it return the sum of all the elements of an array.

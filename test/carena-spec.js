@@ -156,4 +156,57 @@ define(['src/carena'], function (carena) {
             expect(c[0]).toBe(1);
         });
     });
+
+    describe('sort', function () {
+        it('sorting an array', function () {
+            var a = carena.range(1, 100).reverse();
+            var a2 = carena.sort(a);
+            var s = carena.range(1, 100);
+            for(var i=0;i<100;i++) {
+                expect(a2[i]).toBe(s[i]);
+            }
+        });
+    });
+
+    describe('nTiles', function () {
+        it('calculates the N quantiles of an array when N is 4 (Quartiles)', function () {
+            var a = carena.range(1, 100);
+            var ns = carena.nTiles(a, 4);
+            expect(ns.length).toBe(5);
+            expect(ns[0]).toBe(1);
+            expect(ns[1]).toBe(25);
+            expect(ns[2]).toBe(50);
+            expect(ns[3]).toBe(75);
+            expect(ns[4]).toBe(100);
+        });
+        it('calculates the N quantiles of an array when N is 100 (Percentiles)', function () {
+            var a = carena.range(1, 100);
+            var ns = carena.nTiles(a, 100);
+            expect(ns.length).toBe(101);
+            expect(ns[0]).toBe(1);
+            for(var i=1;i<101;i++) {
+                expect(ns[i]).toBe(i);
+            }
+        });
+        it('Quartiles on a single element array', function () {
+            var a = [10];
+            var ns = carena.nTiles(a, 4);
+            expect(ns.length).toBe(5);
+            expect(ns[0]).toBe(10);
+            expect(ns[1]).toBe(10);
+            expect(ns[2]).toBe(10);
+            expect(ns[3]).toBe(10);
+            expect(ns[4]).toBe(10);
+        });
+        it('Quartiles on a reversed array', function () {
+            var a = carena.range(1, 100).reverse();
+            var ns = carena.nTiles(a, 4);
+            expect(ns.length).toBe(5);
+            expect(ns[0]).toBe(1);
+            expect(ns[1]).toBe(25);
+            expect(ns[2]).toBe(50);
+            expect(ns[3]).toBe(75);
+            expect(ns[4]).toBe(100);
+        });
+    });
 });

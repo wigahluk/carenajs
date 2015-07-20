@@ -3,11 +3,7 @@
 
     // accessory functions not exposed in carena object:
 
-    function sort(array) {
-        var a = array.slice();
-        a.sort(function (x, y) { return x - y; });
-        return a;
-    }
+
 
     // Methods exposed in carena object:
 
@@ -50,6 +46,12 @@
             a.push(i);
             i ++;
         }
+        return a;
+    }
+
+    function sort(array) {
+        var a = array.slice();
+        a.sort(function (x, y) { return x - y; });
         return a;
     }
 
@@ -158,6 +160,22 @@
         return c;
     }
 
+    /**
+     * Returns an array with the N + 1 quantile values of a given array
+     * @param a
+     * @param N
+     */
+    function nTiles (a, N) {
+        var b = sort(a);
+        if(b.length === 0) return [];
+        var c = new Array(N + 1);
+        c[0] = b[0];
+        for(var i=1; i<=N; i++){
+            c[i] = b[Math.ceil((b.length * i)/N)-1];
+        }
+        return c;
+    }
+
     function createCarena () {
         var carena = {};
         carena.isArray = isArray;
@@ -172,8 +190,10 @@
         carena.fill = fill;
         carena.wMean = wMean;
         carena.dTimes = dTimes;
+        carena.nTiles = nTiles;
+        carena.sort = sort;
         return carena;
-    };
+    }
 
     /*--------------------------------------------------------------------------*/
 
