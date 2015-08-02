@@ -1,18 +1,99 @@
 /**
  * Convenient methods for manipulating arrays and collections
- * @version vv0.1-alpha - 2015-07-08
+ * @version v0.1.1 - 2015-08-01
  * @author Oscar Ponce <oscar@opb.mx>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  **/
 ;(function () {
     'use strict';
 
+    // accessory constants:
+
+    var objProto = Object.prototype;
+
     // accessory functions not exposed in carena object:
 
-    function sort(array) {
-        var a = array.slice();
-        a.sort(function (x, y) { return x - y; });
+    function atOrDefault(array, i, defaultValue) {
+        if (isUndefined(defaultValue)) { defaultValue = 0; }
+        if (i < 0 || i >= array.length) { return defaultValue; }
+        return array[i];
+    }
+
+    function sumOfArrays (args) {
+        var a = new Array(args[0].length);
+        for ( var i = 0; i < a.length; i++) {
+            a[i] = sumAtIndex(args, i);
+        }
         return a;
+
+        function sumAtIndex(args, i) {
+            var s = 0;
+            for (var j = 0; j < args.length; j++) {
+                s = s + atOrDefault(args[j], i);
+            }
+            return s;
+        }
+    }
+
+    function reduce(array, f, acc) {
+        var idx = -1,
+            l = array.length;
+
+        while (++idx < l) {
+            acc = f(acc, array[idx], idx, array);
+        }
+        return acc;
+    }
+
+    function union () {
+        var idx = 0,
+            l = arguments.length;
+        var a = [];
+        if (l === 0) {
+            return a;
+        }
+        a = arguments[0].slice();
+        while (++idx < l) {
+            forEach(arguments[idx], function (item) {
+                if(a.indexOf(item) < 0) {
+                    a.push(item);
+                }
+            });
+        }
+        return a;
+    }
+
+    function forEach(array, f) {
+        var idx = -1,
+            l = array.length;
+
+        while (++idx < l) {
+            f(array[idx], idx, array);
+        }
+        return array;
+    }
+
+    function map(array, f) {
+        var idx = -1,
+            l = array.length,
+            a = Array(l);
+
+        while (++idx < l) {
+            a[idx] = f(array[idx], idx, array);
+        }
+        return a;
+    }
+
+    function keys(object) {
+        var obj = Object(object);
+        var result = [];
+
+        for (var key in obj) {
+            if (objProto.hasOwnProperty.call(obj, key)) {
+                result.push(key);
+            }
+        }
+        return result;
     }
 
     // Methods exposed in carena object:
@@ -26,7 +107,7 @@
 
     function isUndefined (obj) {
         if (obj === undefined) { return true;}
-        if (typeof obj == 'undefined') { return true; };
+        if (typeof obj == 'undefined') { return true; }
         return false;
     }
 
@@ -59,6 +140,31 @@
         return a;
     }
 
+    function sort (array, f) {
+        var a = array.slice();
+        var c = function (x, y) { return x - y; };
+        if(f) { c = function (x, y) { return f(x) - f(y); }}
+        a.sort(c);
+        return a;
+    }
+
+    function binSearch (array, first, last, value, lessThan) {
+        if(!lessThan) { lessThan = function (a,b) { return a < b; } }
+        while (first < last) {
+            var mid = last + ((first - last) >> 1);
+            if (lessThan(value, array[mid])) {
+                last = mid;
+            } else {
+                first = mid + 1;
+            }
+        }
+        return first;
+    }
+
+    function sortedIndex (array, value) {
+        return binSearch(array, 0, array.length - 1, value);
+    }
+
     // creates a new array where the entries are the same as the given array but replacing undefined with zero or a given
     // value
     function fill(array, value) {
@@ -81,28 +187,6 @@
             s = s + array[i];
         }
         return s;
-    }
-
-    function sumOfArrays (args) {
-        var a = new Array(args[0].length);
-        for ( var i = 0; i < a.length; i++) {
-            a[i] = sumAtIndex(args, i);
-        }
-        return a;
-
-        function sumAtIndex(args, i) {
-            var s = 0;
-            for (var j = 0; j < args.length; j++) {
-                s = s + atOrDefault(args[j], i);
-            }
-            return s;
-        }
-    }
-
-    function atOrDefault(array, i, defaultValue) {
-        if (isUndefined(defaultValue)) { defaultValue = 0; }
-        if (i < 0 || i >= array.length) { return defaultValue; }
-        return array[i];
     }
 
     // calculates the max value of an array.
@@ -164,6 +248,115 @@
         return c;
     }
 
+    /**
+     * Returns an array with the N + 1 quantile values of a given array
+     * @param a
+     * @param N
+     */
+    function nTiles (a, N) {
+        var b = sort(a);
+        if(b.length === 0) return [];
+        var c = new Array(N + 1);
+        c[0] = b[0];
+        for(var i=1; i<=N; i++){
+            c[i] = b[Math.ceil((b.length * i)/N)-1];
+        }
+        return c;
+    }
+
+    /**
+     * Time Series
+     */
+
+    function TimeSeries () {
+        var ts = this;
+        var timeStamps = [];
+        var data = {};
+        Object.defineProperty(ts, 'size', {
+            get: function() { return timeStamps.length; },
+            enumerable: true,
+            configurable: false
+        });
+        Object.defineProperty(ts, 'timeStamps', {
+            get: function() { return timeStamps.slice(); },
+            enumerable: true,
+            configurable: false
+        });
+        Object.defineProperty(ts, 'data', {
+            get: function() { return dataToArray(); },
+            enumerable: true,
+            configurable: false
+        });
+        this.set = function (timestamp, dimensions, metrics) {
+            var insertIdx = sortedIndex(timeStamps, timestamp);
+            var dataGroup = enforceDimensionGroup(dimensions);
+            if(insertIdx > 0 && timeStamps[insertIdx-1] === timestamp) {
+                // replace elements
+                setInGroupAt(dataGroup, insertIdx-1, metrics);
+            } else {
+                // insert elements
+                insertAt(dataGroup, insertIdx, metrics, timestamp);
+            }
+        };
+
+        function insertAt (group, index, metrics, timestamp) {
+            var ks = keys(data);
+            var gr;
+            forEach(ks, function (k) {
+                gr = data[ks].metrics;
+                var ms = keys(gr);
+                if (data[ks] === group) {
+                    ms = union(ms, keys(metrics));
+                }
+                forEach(ms, function (mname) {
+                    var a = enforceMetric(group, mname);
+                    a.values.splice(index, 0, metrics[mname] || 0);
+                });
+            });
+            timeStamps.splice(index, 0, timestamp);
+        }
+
+        function setInGroupAt (group, index, metrics) {
+            forEach(keys(metrics), function (mn) {
+                var a = enforceMetric(group, mn);
+                a.values[index] = metrics[mn];
+            });
+        }
+
+        function dataToArray () {
+            var ks = keys(data);
+            return map(ks, function (k) {
+                return data[k];
+            });
+        }
+
+        function enforceMetric (group, metric) {
+            if(!group.metrics[metric]) {
+                group.metrics[metric] = {
+                    values: zeroes(ts.size)
+                };
+            }
+            return group.metrics[metric];
+        }
+
+        function enforceDimensionGroup (dimensions) {
+            var key = toKey(dimensions);
+            if(!data[key]) {
+                data[key] = { dimensions: dimensions, metrics: {} };
+            }
+            return data[key];
+        }
+
+        function toKey(ks) {
+            return map(keys(ks).sort(), function (k) { return k + '->' + ks[k]; }).join('::');
+        }
+    }
+
+    function tSeries() {
+        var ts = new TimeSeries();
+        return ts;
+    }
+
     function createCarena () {
         var carena = {};
         carena.isArray = isArray;
@@ -178,8 +371,13 @@
         carena.fill = fill;
         carena.wMean = wMean;
         carena.dTimes = dTimes;
+        carena.nTiles = nTiles;
+        carena.sort = sort;
+        carena.tSeries = tSeries;
+        carena.sortedIndex = sortedIndex;
+        carena.union = union;
         return carena;
-    };
+    }
 
     /*--------------------------------------------------------------------------*/
 

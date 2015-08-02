@@ -35,10 +35,10 @@ define(['src/carena'], function (carena) {
 
     describe('range', function () {
         it('Creating a simple array', function () {
-            var a = carena.range(1, 1000);
+            var a = carena.range(1, 100);
             expect(Array.isArray(a)).toBeTruthy();
-            expect(a.length).toBe(1000);
-            for(var i = 0; i < 1000; i++) {
+            expect(a.length).toBe(100);
+            for(var i = 0; i < 100; i++) {
                 expect(a[i]).toBe(i + 1);
             }
         });
@@ -166,6 +166,33 @@ define(['src/carena'], function (carena) {
                 expect(a2[i]).toBe(s[i]);
             }
         });
+        it('sorting an array with a function (identity)', function () {
+            var a = carena.range(1, 100).reverse();
+            var a2 = carena.sort(a, function (i) { return i; });
+            var s = carena.range(1, 100);
+            for(var i=0;i<100;i++) {
+                expect(a2[i]).toBe(s[i]);
+            }
+        });
+    });
+
+    describe('sortedIndex', function () {
+        it('sorting an array', function () {
+            var a = carena.range(1, 100);
+            expect(carena.sortedIndex(a, 50)).toBe(50);
+        });
+    });
+
+    describe('Union', function () {
+        it('union of sub array return longest array', function () {
+            var a = carena.range(1, 100);
+            var b = carena.range(1, 10);
+            var u = carena.union(a,b);
+            expect(u.length).toBe(100);
+            for(var i=0;i<100;i++) {
+                expect(u[i]).toBe(a[i]);
+            }
+        });
     });
 
     describe('nTiles', function () {
@@ -208,5 +235,42 @@ define(['src/carena'], function (carena) {
             expect(ns[3]).toBe(75);
             expect(ns[4]).toBe(100);
         });
+    });
+
+    describe('tSeries', function () {
+        it('Create an empty time series', function () {
+            var ts = carena.tSeries();
+            expect(ts.size).toBe(0);
+        });
+        it('Create an empty time series and add entries', function () {
+            var ts = carena.tSeries();
+            expect(ts.size).toBe(0);
+            var now = new Date().valueOf();
+            ts.set(now+1000, {d1: 'd1', d2: 'd2'}, {m1: 2, m2: 20});
+            ts.set(now, {d1: 'd1', d2: 'd2'}, {m1: 1, m2: 10});
+            expect(ts.size).toBe(2);
+
+            var tstamps = ts.timeStamps;
+            expect(tstamps.length).toBe(2);
+            expect(tstamps[0]).toBe(now);
+            expect(tstamps[1]).toBe(now+1000);
+            expect(ts.data.length).toBe(1);
+            // reset one entry
+            ts.set(now, {d1: 'd1', d2: 'd2'}, {m1: 1, m2: 12});
+            expect(ts.timeStamps.length).toBe(2);
+            // add new group of dimensions
+            ts.set(now, {d1: 'd1', d2: 'd22'}, {m1: 11, m2: 22});
+            expect(ts.timeStamps.length).toBe(2);
+            expect(ts.data.length).toBe(2);
+        });
+//        it('Projection', function () {
+//            var ts = carena.tSeries();
+//            expect(ts.size).toBe(0);
+//            var now = new Date().valueOf();
+//            ts.set(now, [{d1: 'd1'},{d2: 'd2'}], [{m1: 1}, {m2: 10}]);
+//            ts.set(now+1000, [{d1: 'd1'},{d2: 'd2'}], [{m1: 2}, {m2: 20}]);
+//            var ts2 = ts.project(['d1']);
+//            expect(ts2.size).toBe(2);
+//        });
     });
 });

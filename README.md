@@ -71,3 +71,45 @@ Multiply all elements in a given array by a constant. By convention, if the arra
 ### wMean(array, weights)
 
 Calculates the arithmetic weighted mean of an array. By convention, if the array is empty or undefined, returns zero.
+
+
+Time Series
+-----------
+
+A time series object in carena is understand as an object containing:
+ - An array of time stamps
+ - An array of dimensions
+ - Each dimension contains an array of metrics
+ - Each metric has an array of values for each of the time stamps
+ 
+    {
+       timestamps: [ ... ]
+       dimensions: [
+          {
+              keys: [{ dim1: 'name1',... }],
+              metrics: [ { metric1: {
+                  values: [ ... ],...,
+                  [weighs: 'name of metric to be used as weights']
+              } ]
+          },...
+       ]
+    }
+
+Time series can be concatenated and merged.
+ 
+Time series can be exported and imported from JSON objects. They can also be created empty and start accepting insertions:
+
+    var ts = new carena.tSeries();
+    ts.set ( timestamp, { server: 's1', region: 'r2' }, [{ traffic: { values: [... ]}}, { avgResponseTime: { values: [...], weights: 'traffic' } }]);
+    
+Time series can be projected by dimensions and metrics:
+
+    ts.project(['server', 'traffic']);
+    ts.project([{name: 'd1', type: 'dimension', map: function(dimensions, metrics)}, {name: 'm1', type: 'metric', map: function(dimensions, metrics)}]);
+    
+Time series can be converted into arrays as:
+ - toRows: return an array of arrays, each one representing one row in a table, with the first one being the names of the fields
+ - toColumns returns an object, where each key is the name of a field and the value of the property is the array of all the values
+ 
+When converting into arrays, each value that is not present in the collection will be converted to zero or will use the specified default.
+
